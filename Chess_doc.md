@@ -1,9 +1,21 @@
-## Document for Chess 
-
-# TODO: Fill This 
+# Document for Chess 
 
 
-* Dont be disturbed the Corner Points Logic ..
-* It 's working but the logic seems be less time Consuming. Tried Something Different
+## Need to Write Test Cases. 
 
-# Need to Write Test Cases. 
+# Command Line Usage 
+
+```
+python chess_exer.py knights d5
+
+```
+or 
+
+```
+python chess_exer.py queen h5 
+```
+or 
+
+```
+python chess_exer.py rook e6 
+```
