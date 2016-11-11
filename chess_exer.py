@@ -6,11 +6,9 @@ class Board(object):
 
     def __init__(self, coordinates):
         if self.layout_check(coordinates):
-            
             self.pos_alfa = coordinates[0]
             self.pos_num = int(coordinates[1])
-            # self.all = self.all_blocks
-
+            
     def layout_check(self, pos):
         
         deal_x = lambda x : x in self.X
@@ -93,8 +91,11 @@ def filter_results(result):
 def knight_possibilities(corners, all):
     all_poss = ()
     for i in corners:
-        k = Board(i)
-        all_poss += tuple(set(k.edge_blocks()) - set(all))
+        try:
+            k = Board(i)
+            all_poss += tuple(set(k.edge_blocks()) - set(all))
+        except:
+            pass
     return filter_results(all_poss)
 
 if __name__ == "__main__":
@@ -106,6 +107,7 @@ if __name__ == "__main__":
     try:
         given = Board(pos)
         if name.startswith('k'):
+             
             print "Jumps to", knight_possibilities(given.corner_blocks(), given.all_blocks())
         if name.startswith('r'): 
             print "Vertical", given.veritical_dir()[0], given.veritical_dir()[-1]
