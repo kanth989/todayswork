@@ -59,10 +59,8 @@ class Board(object):
             right_down_coord = self.X[-right_total_down-1] + str(1)
         else: 
             right_down_coord = 'h' + str(self.Y[-right_total_down])
-
-
-        # left_up
         
+        # left_up
         left_up_total = 8 - leng  + self.pos_num
         # print left_up_total
         if left_up_total - 8  >= 0 :
@@ -81,13 +79,18 @@ class Board(object):
 
         return [right_up_coord, right_down_coord, left_up_coord, left_down_coord]
 
+
+# Since Knight Possibilites go Beyond the h and 8 we are using this function to discard cells. 
 def filter_results(result):
     X = ['a','b','c','d','e','f','g','h']
     Y = [1,2,3,4,5,6,7,8]
     all_possibiliites = [x+ str(y) for x in X for y in Y]
     return [x for x in result if x in all_possibiliites]
 
-
+# Knights Position: 
+# 1. Find the corner blocks of input cell. 
+# 2. Find the Edge (Adjacent Cells) of the Corner Cells
+# 3. Remove the cells around the input Cell from Step 2, Resulting in Possible Knight Moves.
 def knight_possibilities(corners, all):
     all_poss = ()
     for i in corners:
@@ -98,16 +101,33 @@ def knight_possibilities(corners, all):
             pass
     return filter_results(all_poss)
 
+
+# Alternate Approach 
+def knight_program2(pos):
+    X = ['a','b','c','d','e','f','g','h']
+    Y = [1,2,3,4,5,6,7,8]
+    posn = lambda x : x if x <= 8 else 0
+    posa = lambda x: x if x in X else None
+    k = Board(pos)
+    pos_near = filter(lambda x: x > 0, [posn(k.pos_num) + 2 ,posn(k.pos_num) - 2]) 
+    pos_far = filter(lambda x: x > 0, [k.pos_num + 1, k.pos_num-1])
+    pos_a_near = filter( None, [X[X.index(k.pos_alfa) - 1], X[X.index(k.pos_alfa)+ 1]])
+    pos_a_far = filter( None, [X[X.index(k.pos_alfa) - 2], X[X.index(k.pos_alfa) + 2]])
+    
+    posa_s = [ y +str(x) for x in pos_near for y in pos_a_near] + [y + str(x) for x in pos_far for y in pos_a_far]
+
+    print posa_s
+
 if __name__ == "__main__":
     name = sys.argv[1]
     pos = sys.argv[2]
     print name , pos
     print "*-----------------*"
     
+    # knight_program2(pos)
     try:
         given = Board(pos)
-        if name.startswith('k'):
-             
+        if name.startswith('k'):     
             print "Jumps to", knight_possibilities(given.corner_blocks(), given.all_blocks())
         if name.startswith('r'): 
             print "Vertical", given.veritical_dir()[0], given.veritical_dir()[-1]
@@ -120,3 +140,5 @@ if __name__ == "__main__":
     except Exception, e:
         print e
         print "Something went wrong with your input."
+
+

@@ -1,0 +1,183 @@
+var _etaque$elm_simple_form$Form_Input$dumpErrors = function (form) {
+	var line = function (_p0) {
+		var _p1 = _p0;
+		return A2(
+			_elm_lang$core$Basics_ops['++'],
+			_p1._0,
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				': ',
+				_elm_lang$core$Basics$toString(_p1._1)));
+	};
+	var content = A2(
+		_elm_lang$core$String$join,
+		'\n',
+		A2(
+			_elm_lang$core$List$map,
+			line,
+			_etaque$elm_simple_form$Form$getErrors(form)));
+	return A2(
+		_elm_lang$html$Html$pre,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html$text(content)
+			]));
+};
+var _etaque$elm_simple_form$Form_Input$radioInput = F3(
+	function (value, state, attrs) {
+		var formAttrs = _elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$type$('radio'),
+				_elm_lang$html$Html_Attributes$name(state.path),
+				_elm_lang$html$Html_Attributes$value(value),
+				_elm_lang$html$Html_Attributes$checked(
+				_elm_lang$core$Native_Utils.eq(
+					state.value,
+					_elm_lang$core$Maybe$Just(value))),
+				_elm_lang$html$Html_Events$onFocus(
+				_etaque$elm_simple_form$Form$Focus(state.path)),
+				_elm_lang$html$Html_Events$onBlur(
+				_etaque$elm_simple_form$Form$Blur(state.path)),
+				A2(
+				_elm_lang$html$Html_Events$on,
+				'change',
+				A2(
+					_elm_lang$core$Json_Decode$map,
+					function (_p2) {
+						return A2(
+							_etaque$elm_simple_form$Form$Input,
+							state.path,
+							_etaque$elm_simple_form$Form_Field$Radio(_p2));
+					},
+					_elm_lang$html$Html_Events$targetValue))
+			]);
+		return A2(
+			_elm_lang$html$Html$input,
+			A2(_elm_lang$core$Basics_ops['++'], formAttrs, attrs),
+			_elm_lang$core$Native_List.fromArray(
+				[]));
+	});
+var _etaque$elm_simple_form$Form_Input$selectInput = F3(
+	function (options, state, attrs) {
+		var buildOption = function (_p3) {
+			var _p4 = _p3;
+			var _p5 = _p4._0;
+			return A2(
+				_elm_lang$html$Html$option,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$value(_p5),
+						_elm_lang$html$Html_Attributes$selected(
+						_elm_lang$core$Native_Utils.eq(
+							state.value,
+							_elm_lang$core$Maybe$Just(_p5)))
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text(_p4._1)
+					]));
+		};
+		var formAttrs = _elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html_Events$on,
+				'change',
+				A2(
+					_elm_lang$core$Json_Decode$map,
+					function (_p6) {
+						return A2(
+							_etaque$elm_simple_form$Form$Input,
+							state.path,
+							_etaque$elm_simple_form$Form_Field$Select(_p6));
+					},
+					_elm_lang$html$Html_Events$targetValue)),
+				_elm_lang$html$Html_Events$onFocus(
+				_etaque$elm_simple_form$Form$Focus(state.path)),
+				_elm_lang$html$Html_Events$onBlur(
+				_etaque$elm_simple_form$Form$Blur(state.path))
+			]);
+		return A2(
+			_elm_lang$html$Html$select,
+			A2(_elm_lang$core$Basics_ops['++'], formAttrs, attrs),
+			A2(_elm_lang$core$List$map, buildOption, options));
+	});
+var _etaque$elm_simple_form$Form_Input_ops = _etaque$elm_simple_form$Form_Input_ops || {};
+_etaque$elm_simple_form$Form_Input_ops['?='] = _elm_lang$core$Basics$flip(_elm_lang$core$Maybe$withDefault);
+var _etaque$elm_simple_form$Form_Input$baseInput = F4(
+	function (t, toField, state, attrs) {
+		var formAttrs = _elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$type$(t),
+				_elm_lang$html$Html_Attributes$defaultValue(
+				A2(_etaque$elm_simple_form$Form_Input_ops['?='], state.value, '')),
+				_elm_lang$html$Html_Events$onInput(
+				function (_p7) {
+					return A2(
+						_etaque$elm_simple_form$Form$Input,
+						state.path,
+						toField(_p7));
+				}),
+				_elm_lang$html$Html_Events$onFocus(
+				_etaque$elm_simple_form$Form$Focus(state.path)),
+				_elm_lang$html$Html_Events$onBlur(
+				_etaque$elm_simple_form$Form$Blur(state.path))
+			]);
+		return A2(
+			_elm_lang$html$Html$input,
+			A2(_elm_lang$core$Basics_ops['++'], formAttrs, attrs),
+			_elm_lang$core$Native_List.fromArray(
+				[]));
+	});
+var _etaque$elm_simple_form$Form_Input$textInput = A2(_etaque$elm_simple_form$Form_Input$baseInput, 'text', _etaque$elm_simple_form$Form_Field$Text);
+var _etaque$elm_simple_form$Form_Input$passwordInput = A2(_etaque$elm_simple_form$Form_Input$baseInput, 'password', _etaque$elm_simple_form$Form_Field$Text);
+var _etaque$elm_simple_form$Form_Input$textArea = F2(
+	function (state, attrs) {
+		var formAttrs = _elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$defaultValue(
+				A2(_etaque$elm_simple_form$Form_Input_ops['?='], state.value, '')),
+				_elm_lang$html$Html_Events$onInput(
+				function (_p8) {
+					return A2(
+						_etaque$elm_simple_form$Form$Input,
+						state.path,
+						_etaque$elm_simple_form$Form_Field$Textarea(_p8));
+				}),
+				_elm_lang$html$Html_Events$onFocus(
+				_etaque$elm_simple_form$Form$Focus(state.path)),
+				_elm_lang$html$Html_Events$onBlur(
+				_etaque$elm_simple_form$Form$Blur(state.path))
+			]);
+		return A2(
+			_elm_lang$html$Html$textarea,
+			A2(_elm_lang$core$Basics_ops['++'], formAttrs, attrs),
+			_elm_lang$core$Native_List.fromArray(
+				[]));
+	});
+var _etaque$elm_simple_form$Form_Input$checkboxInput = F2(
+	function (state, attrs) {
+		var formAttrs = _elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$type$('checkbox'),
+				_elm_lang$html$Html_Attributes$checked(
+				A2(_etaque$elm_simple_form$Form_Input_ops['?='], state.value, false)),
+				_elm_lang$html$Html_Events$onCheck(
+				function (_p9) {
+					return A2(
+						_etaque$elm_simple_form$Form$Input,
+						state.path,
+						_etaque$elm_simple_form$Form_Field$Check(_p9));
+				}),
+				_elm_lang$html$Html_Events$onFocus(
+				_etaque$elm_simple_form$Form$Focus(state.path)),
+				_elm_lang$html$Html_Events$onBlur(
+				_etaque$elm_simple_form$Form$Blur(state.path))
+			]);
+		return A2(
+			_elm_lang$html$Html$input,
+			A2(_elm_lang$core$Basics_ops['++'], formAttrs, attrs),
+			_elm_lang$core$Native_List.fromArray(
+				[]));
+	});

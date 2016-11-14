@@ -1,0 +1,251 @@
+var _rgrempel$elm_route_url$RouteUrl$url2path = function (url) {
+	return A2(
+		_elm_lang$core$Basics_ops['++'],
+		'/',
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			A2(_elm_lang$core$String$join, '/', url.path),
+			(url.hasTrailingSlash && _elm_lang$core$Basics$not(
+				_elm_lang$core$List$isEmpty(url.path))) ? '/' : ''));
+};
+var _rgrempel$elm_route_url$RouteUrl$eqUrl = F2(
+	function (u1, u2) {
+		return _elm_lang$core$Native_Utils.eq(u1.path, u2.path) && (_elm_lang$core$Native_Utils.eq(u1.hasTrailingSlash, u2.hasTrailingSlash) && (_elm_lang$core$Native_Utils.eq(u1.hash, u2.hash) && _elm_lang$core$Native_Utils.eq(
+			_elm_lang$core$Dict$toList(u1.query),
+			_elm_lang$core$Dict$toList(u2.query))));
+	});
+var _rgrempel$elm_route_url$RouteUrl$checkDistinctUrl = F2(
+	function (old, $new) {
+		return A2(
+			_rgrempel$elm_route_url$RouteUrl$eqUrl,
+			_sporto$erl$Erl$parse($new.url),
+			old) ? _elm_lang$core$Maybe$Nothing : _elm_lang$core$Maybe$Just($new);
+	});
+var _rgrempel$elm_route_url$RouteUrl$mapUrl = F2(
+	function (func, c1) {
+		return _elm_lang$core$Native_Utils.update(
+			c1,
+			{
+				url: func(c1.url)
+			});
+	});
+var _rgrempel$elm_route_url$RouteUrl$normalizeUrl = F2(
+	function (old, change) {
+		return A2(
+			_rgrempel$elm_route_url$RouteUrl$mapUrl,
+			A2(_elm_lang$core$String$startsWith, '?', change.url) ? function (url) {
+				return A2(
+					_elm_lang$core$Basics_ops['++'],
+					_rgrempel$elm_route_url$RouteUrl$url2path(old),
+					url);
+			} : (A2(_elm_lang$core$String$startsWith, '#', change.url) ? function (url) {
+				return A2(
+					_elm_lang$core$Basics_ops['++'],
+					_rgrempel$elm_route_url$RouteUrl$url2path(old),
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						_sporto$erl$Erl$queryToString(old),
+						url));
+			} : function (url) {
+				return url;
+			}),
+			change);
+	});
+var _rgrempel$elm_route_url$RouteUrl$urlChange2Cmd = function (change) {
+	return function () {
+		var _p0 = change.entry;
+		if (_p0.ctor === 'NewEntry') {
+			return _elm_lang$navigation$Navigation$newUrl;
+		} else {
+			return _elm_lang$navigation$Navigation$modifyUrl;
+		}
+	}()(change.url);
+};
+var _rgrempel$elm_route_url$RouteUrl$update = F3(
+	function (app, msg, model) {
+		var _p1 = A2(app.update, msg, model.user);
+		var newUserModel = _p1._0;
+		var userCommand = _p1._1;
+		var maybeUrlChange = A2(
+			_elm_lang$core$Maybe$andThen,
+			A2(
+				_elm_lang$core$Maybe$map,
+				_rgrempel$elm_route_url$RouteUrl$normalizeUrl(model.router.reportedUrl),
+				A2(app.delta2url, model.user, newUserModel)),
+			_rgrempel$elm_route_url$RouteUrl$checkDistinctUrl(model.router.reportedUrl));
+		var _p2 = maybeUrlChange;
+		if (_p2.ctor === 'Just') {
+			var _p3 = _p2._0;
+			return {
+				ctor: '_Tuple2',
+				_0: {
+					user: newUserModel,
+					router: {
+						reportedUrl: _sporto$erl$Erl$parse(_p3.url),
+						expectedUrlUpdates: model.router.expectedUrlUpdates + 1
+					}
+				},
+				_1: _elm_lang$core$Platform_Cmd$batch(
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_rgrempel$elm_route_url$RouteUrl$urlChange2Cmd(_p3),
+							userCommand
+						]))
+			};
+		} else {
+			return {
+				ctor: '_Tuple2',
+				_0: {user: newUserModel, router: model.router},
+				_1: userCommand
+			};
+		}
+	});
+var _rgrempel$elm_route_url$RouteUrl$init = F3(
+	function (app, flags, location) {
+		var routerModel = {
+			expectedUrlUpdates: 0,
+			reportedUrl: _sporto$erl$Erl$parse(location.href)
+		};
+		var step = F2(
+			function (msg, _p4) {
+				var _p5 = _p4;
+				var _p6 = A2(app.update, msg, _p5._0);
+				return {
+					ctor: '_Tuple2',
+					_0: _p6._0,
+					_1: A2(_elm_lang$core$List_ops['::'], _p6._1, _p5._1)
+				};
+			});
+		var _p7 = app.init(flags);
+		var userModelFromFlags = _p7._0;
+		var commandFromFlags = _p7._1;
+		var _p8 = A3(
+			_elm_lang$core$List$foldl,
+			step,
+			{
+				ctor: '_Tuple2',
+				_0: userModelFromFlags,
+				_1: _elm_lang$core$Native_List.fromArray(
+					[commandFromFlags])
+			},
+			app.location2messages(location));
+		var userModelFromLocation = _p8._0;
+		var commands = _p8._1;
+		return {
+			ctor: '_Tuple2',
+			_0: {user: userModelFromLocation, router: routerModel},
+			_1: _elm_lang$core$Platform_Cmd$batch(commands)
+		};
+	});
+var _rgrempel$elm_route_url$RouteUrl$urlUpdate = F3(
+	function (app, location, model) {
+		var newRouterModel = {
+			reportedUrl: _sporto$erl$Erl$parse(location.href),
+			expectedUrlUpdates: (_elm_lang$core$Native_Utils.cmp(model.router.expectedUrlUpdates, 0) > 0) ? (model.router.expectedUrlUpdates - 1) : 0
+		};
+		if (_elm_lang$core$Native_Utils.cmp(model.router.expectedUrlUpdates, 0) > 0) {
+			return {
+				ctor: '_Tuple2',
+				_0: _elm_lang$core$Native_Utils.update(
+					model,
+					{router: newRouterModel}),
+				_1: _elm_lang$core$Platform_Cmd$none
+			};
+		} else {
+			var step = F2(
+				function (msg, _p9) {
+					var _p10 = _p9;
+					var _p11 = A2(app.update, msg, _p10._0);
+					return {
+						ctor: '_Tuple2',
+						_0: _p11._0,
+						_1: A2(_elm_lang$core$List_ops['::'], _p11._1, _p10._1)
+					};
+				});
+			var _p12 = A3(
+				_elm_lang$core$List$foldl,
+				step,
+				{
+					ctor: '_Tuple2',
+					_0: model.user,
+					_1: _elm_lang$core$Native_List.fromArray(
+						[])
+				},
+				app.location2messages(location));
+			var newUserModel = _p12._0;
+			var commands = _p12._1;
+			return {
+				ctor: '_Tuple2',
+				_0: {user: newUserModel, router: newRouterModel},
+				_1: _elm_lang$core$Platform_Cmd$batch(commands)
+			};
+		}
+	});
+var _rgrempel$elm_route_url$RouteUrl$subscriptions = F2(
+	function (app, model) {
+		return app.subscriptions(model.user);
+	});
+var _rgrempel$elm_route_url$RouteUrl$view = F2(
+	function (app, model) {
+		return app.view(model.user);
+	});
+var _rgrempel$elm_route_url$RouteUrl$runNavigationApp = function (app) {
+	return A2(
+		_elm_lang$navigation$Navigation$programWithFlags,
+		app.parser,
+		{init: app.init, update: app.update, urlUpdate: app.urlUpdate, view: app.view, subscriptions: app.subscriptions});
+};
+var _rgrempel$elm_route_url$RouteUrl$navigationAppWithFlags = function (app) {
+	return {
+		parser: _elm_lang$navigation$Navigation$makeParser(_elm_lang$core$Basics$identity),
+		init: _rgrempel$elm_route_url$RouteUrl$init(app),
+		update: _rgrempel$elm_route_url$RouteUrl$update(app),
+		urlUpdate: _rgrempel$elm_route_url$RouteUrl$urlUpdate(app),
+		view: _rgrempel$elm_route_url$RouteUrl$view(app),
+		subscriptions: _rgrempel$elm_route_url$RouteUrl$subscriptions(app)
+	};
+};
+var _rgrempel$elm_route_url$RouteUrl$programWithFlags = function (_p13) {
+	return _rgrempel$elm_route_url$RouteUrl$runNavigationApp(
+		_rgrempel$elm_route_url$RouteUrl$navigationAppWithFlags(_p13));
+};
+var _rgrempel$elm_route_url$RouteUrl$navigationApp = function (app) {
+	return _rgrempel$elm_route_url$RouteUrl$navigationAppWithFlags(
+		_elm_lang$core$Native_Utils.update(
+			app,
+			{
+				init: function (_p14) {
+					return app.init;
+				}
+			}));
+};
+var _rgrempel$elm_route_url$RouteUrl$program = function (_p15) {
+	return _rgrempel$elm_route_url$RouteUrl$runNavigationApp(
+		_rgrempel$elm_route_url$RouteUrl$navigationApp(_p15));
+};
+var _rgrempel$elm_route_url$RouteUrl$App = F6(
+	function (a, b, c, d, e, f) {
+		return {delta2url: a, location2messages: b, init: c, update: d, subscriptions: e, view: f};
+	});
+var _rgrempel$elm_route_url$RouteUrl$AppWithFlags = F6(
+	function (a, b, c, d, e, f) {
+		return {delta2url: a, location2messages: b, init: c, update: d, subscriptions: e, view: f};
+	});
+var _rgrempel$elm_route_url$RouteUrl$UrlChange = F2(
+	function (a, b) {
+		return {entry: a, url: b};
+	});
+var _rgrempel$elm_route_url$RouteUrl$RouterModel = F2(
+	function (a, b) {
+		return {reportedUrl: a, expectedUrlUpdates: b};
+	});
+var _rgrempel$elm_route_url$RouteUrl$Model = F2(
+	function (a, b) {
+		return {user: a, router: b};
+	});
+var _rgrempel$elm_route_url$RouteUrl$NavigationApp = F6(
+	function (a, b, c, d, e, f) {
+		return {parser: a, init: b, update: c, urlUpdate: d, view: e, subscriptions: f};
+	});
+var _rgrempel$elm_route_url$RouteUrl$ModifyEntry = {ctor: 'ModifyEntry'};
+var _rgrempel$elm_route_url$RouteUrl$NewEntry = {ctor: 'NewEntry'};

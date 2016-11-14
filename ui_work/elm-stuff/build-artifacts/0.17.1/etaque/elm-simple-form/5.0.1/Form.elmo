@@ -1,0 +1,317 @@
+var _etaque$elm_simple_form$Form$getChangedFields = function (_p0) {
+	var _p1 = _p0;
+	return _p1._0.changedFields;
+};
+var _etaque$elm_simple_form$Form$merge = F2(
+	function (v1, v2) {
+		var _p2 = {ctor: '_Tuple2', _0: v1, _1: v2};
+		if (((_p2.ctor === '_Tuple2') && (_p2._0.ctor === 'Group')) && (_p2._1.ctor === 'Group')) {
+			return _etaque$elm_simple_form$Form_Field$Group(
+				A2(_elm_lang$core$Dict$union, _p2._0._0, _p2._1._0));
+		} else {
+			return v1;
+		}
+	});
+var _etaque$elm_simple_form$Form$getFocus = function (_p3) {
+	var _p4 = _p3;
+	return _p4._0.focus;
+};
+var _etaque$elm_simple_form$Form$isDirtyAt = F2(
+	function (qualifiedName, _p5) {
+		var _p6 = _p5;
+		return A2(_elm_lang$core$Set$member, qualifiedName, _p6._0.dirtyFields);
+	});
+var _etaque$elm_simple_form$Form$isChangedAt = F2(
+	function (qualifiedName, _p7) {
+		var _p8 = _p7;
+		return A2(_elm_lang$core$Set$member, qualifiedName, _p8._0.changedFields);
+	});
+var _etaque$elm_simple_form$Form$getErrorAt = F2(
+	function (qualifiedName, _p9) {
+		var _p10 = _p9;
+		var walkPath = F2(
+			function (path, maybeNode) {
+				var _p11 = path;
+				if (_p11.ctor === '::') {
+					return A2(
+						_elm_lang$core$Maybe$andThen,
+						maybeNode,
+						function (error) {
+							var _p12 = error;
+							if (_p12.ctor === 'GroupErrors') {
+								return A2(
+									walkPath,
+									_p11._1,
+									A2(_etaque$elm_simple_form$Form_Error$getAt, _p11._0, error));
+							} else {
+								return _elm_lang$core$Maybe$Just(error);
+							}
+						});
+				} else {
+					return maybeNode;
+				}
+			});
+		return A2(
+			walkPath,
+			A2(_elm_lang$core$String$split, '.', qualifiedName),
+			_elm_lang$core$Maybe$Just(_p10._0.errors));
+	});
+var _etaque$elm_simple_form$Form$getErrors = function (_p13) {
+	var _p14 = _p13;
+	var mapGroupItem = F2(
+		function (path, _p15) {
+			var _p16 = _p15;
+			return A2(
+				walkTree,
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					path,
+					_elm_lang$core$Native_List.fromArray(
+						[_p16._0])),
+				_p16._1);
+		});
+	var walkTree = F2(
+		function (path, node) {
+			var _p17 = node;
+			if (_p17.ctor === 'GroupErrors') {
+				return A2(
+					_elm_lang$core$List$concatMap,
+					mapGroupItem(path),
+					_elm_lang$core$Dict$toList(_p17._0));
+			} else {
+				return _elm_lang$core$Native_List.fromArray(
+					[
+						{
+						ctor: '_Tuple2',
+						_0: A2(_elm_lang$core$String$join, '.', path),
+						_1: node
+					}
+					]);
+			}
+		});
+	return A2(
+		walkTree,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_p14._0.errors);
+};
+var _etaque$elm_simple_form$Form$isSubmitted = function (_p18) {
+	var _p19 = _p18;
+	return _p19._0.isSubmitted;
+};
+var _etaque$elm_simple_form$Form$getLiveErrorAt = F2(
+	function (name, form) {
+		return (_etaque$elm_simple_form$Form$isSubmitted(form) || (A2(_etaque$elm_simple_form$Form$isChangedAt, name, form) && _elm_lang$core$Basics$not(
+			A2(_etaque$elm_simple_form$Form$isDirtyAt, name, form)))) ? A2(_etaque$elm_simple_form$Form$getErrorAt, name, form) : _elm_lang$core$Maybe$Nothing;
+	});
+var _etaque$elm_simple_form$Form$getOutput = function (_p20) {
+	var _p21 = _p20;
+	return _p21._0.output;
+};
+var _etaque$elm_simple_form$Form$setFieldAt = F3(
+	function (qualifiedName, field, _p22) {
+		var _p23 = _p22;
+		var walkPath = F2(
+			function (path, maybeNode) {
+				var _p24 = path;
+				if (_p24.ctor === '::') {
+					var _p25 = _p24._0;
+					var node = A2(
+						_elm_lang$core$Maybe$withDefault,
+						_etaque$elm_simple_form$Form_Field$Group(_elm_lang$core$Dict$empty),
+						maybeNode);
+					var childField = A2(
+						walkPath,
+						_p24._1,
+						A2(_etaque$elm_simple_form$Form_Field$at, _p25, node));
+					return A2(
+						_etaque$elm_simple_form$Form$merge,
+						_etaque$elm_simple_form$Form_Field$Group(
+							_elm_lang$core$Dict$fromList(
+								_elm_lang$core$Native_List.fromArray(
+									[
+										{ctor: '_Tuple2', _0: _p25, _1: childField}
+									]))),
+						node);
+				} else {
+					return field;
+				}
+			});
+		return A2(
+			walkPath,
+			A2(_elm_lang$core$String$split, '.', qualifiedName),
+			_elm_lang$core$Maybe$Just(_p23._0.fields));
+	});
+var _etaque$elm_simple_form$Form$getFieldAt = F2(
+	function (qualifiedName, _p26) {
+		var _p27 = _p26;
+		var walkPath = F2(
+			function (name, maybeField) {
+				return A2(
+					_elm_lang$core$Maybe$andThen,
+					maybeField,
+					_etaque$elm_simple_form$Form_Field$at(name));
+			});
+		return A3(
+			_elm_lang$core$List$foldl,
+			walkPath,
+			_elm_lang$core$Maybe$Just(_p27._0.fields),
+			A2(_elm_lang$core$String$split, '.', qualifiedName));
+	});
+var _etaque$elm_simple_form$Form$getStringAt = F2(
+	function (name, form) {
+		return A2(
+			_elm_lang$core$Maybe$andThen,
+			A2(_etaque$elm_simple_form$Form$getFieldAt, name, form),
+			_etaque$elm_simple_form$Form_Field$asString);
+	});
+var _etaque$elm_simple_form$Form$getBoolAt = F2(
+	function (name, form) {
+		return A2(
+			_elm_lang$core$Maybe$andThen,
+			A2(_etaque$elm_simple_form$Form$getFieldAt, name, form),
+			_etaque$elm_simple_form$Form_Field$asBool);
+	});
+var _etaque$elm_simple_form$Form$updateValidate = function (model) {
+	var _p28 = model.validation(model.fields);
+	if (_p28.ctor === 'Ok') {
+		return _elm_lang$core$Native_Utils.update(
+			model,
+			{
+				errors: _etaque$elm_simple_form$Form_Error$GroupErrors(_elm_lang$core$Dict$empty),
+				output: _elm_lang$core$Maybe$Just(_p28._0)
+			});
+	} else {
+		return _elm_lang$core$Native_Utils.update(
+			model,
+			{errors: _p28._0, output: _elm_lang$core$Maybe$Nothing});
+	}
+};
+var _etaque$elm_simple_form$Form$getField = F3(
+	function (getValue, path, form) {
+		return {
+			path: path,
+			value: A2(getValue, path, form),
+			error: A2(_etaque$elm_simple_form$Form$getErrorAt, path, form),
+			liveError: A2(_etaque$elm_simple_form$Form$getLiveErrorAt, path, form),
+			isDirty: A2(_etaque$elm_simple_form$Form$isDirtyAt, path, form),
+			isChanged: A2(_etaque$elm_simple_form$Form$isChangedAt, path, form),
+			hasFocus: _elm_lang$core$Native_Utils.eq(
+				_etaque$elm_simple_form$Form$getFocus(form),
+				_elm_lang$core$Maybe$Just(path))
+		};
+	});
+var _etaque$elm_simple_form$Form$getFieldAsBool = _etaque$elm_simple_form$Form$getField(_etaque$elm_simple_form$Form$getBoolAt);
+var _etaque$elm_simple_form$Form$getFieldAsString = _etaque$elm_simple_form$Form$getField(_etaque$elm_simple_form$Form$getStringAt);
+var _etaque$elm_simple_form$Form$Model = F8(
+	function (a, b, c, d, e, f, g, h) {
+		return {fields: a, focus: b, dirtyFields: c, changedFields: d, isSubmitted: e, output: f, errors: g, validation: h};
+	});
+var _etaque$elm_simple_form$Form$FieldState = F7(
+	function (a, b, c, d, e, f, g) {
+		return {path: a, value: b, error: c, liveError: d, isDirty: e, isChanged: f, hasFocus: g};
+	});
+var _etaque$elm_simple_form$Form$F = function (a) {
+	return {ctor: 'F', _0: a};
+};
+var _etaque$elm_simple_form$Form$initial = F2(
+	function (initialFields, validation) {
+		var model = {
+			fields: _etaque$elm_simple_form$Form_Field$group(initialFields),
+			focus: _elm_lang$core$Maybe$Nothing,
+			dirtyFields: _elm_lang$core$Set$empty,
+			changedFields: _elm_lang$core$Set$empty,
+			isSubmitted: false,
+			output: _elm_lang$core$Maybe$Nothing,
+			errors: _etaque$elm_simple_form$Form_Error$GroupErrors(_elm_lang$core$Dict$empty),
+			validation: validation
+		};
+		return _etaque$elm_simple_form$Form$F(
+			_etaque$elm_simple_form$Form$updateValidate(model));
+	});
+var _etaque$elm_simple_form$Form$update = F2(
+	function (msg, _p29) {
+		var _p30 = _p29;
+		var _p35 = _p30._0;
+		var _p31 = msg;
+		switch (_p31.ctor) {
+			case 'NoOp':
+				return _etaque$elm_simple_form$Form$F(_p35);
+			case 'Focus':
+				var newModel = _elm_lang$core$Native_Utils.update(
+					_p35,
+					{
+						focus: _elm_lang$core$Maybe$Just(_p31._0)
+					});
+				return _etaque$elm_simple_form$Form$F(newModel);
+			case 'Blur':
+				var newDirtyFields = A2(_elm_lang$core$Set$remove, _p31._0, _p35.dirtyFields);
+				var newModel = _elm_lang$core$Native_Utils.update(
+					_p35,
+					{focus: _elm_lang$core$Maybe$Nothing, dirtyFields: newDirtyFields});
+				return _etaque$elm_simple_form$Form$F(
+					_etaque$elm_simple_form$Form$updateValidate(newModel));
+			case 'Input':
+				var _p34 = _p31._0;
+				var _p33 = _p31._1;
+				var newChangedFields = A2(_elm_lang$core$Set$insert, _p34, _p35.changedFields);
+				var isDirty = function () {
+					var _p32 = _p33;
+					switch (_p32.ctor) {
+						case 'Text':
+							return true;
+						case 'Textarea':
+							return true;
+						default:
+							return false;
+					}
+				}();
+				var newDirtyFields = isDirty ? A2(_elm_lang$core$Set$insert, _p34, _p35.dirtyFields) : _p35.dirtyFields;
+				var newFields = A3(
+					_etaque$elm_simple_form$Form$setFieldAt,
+					_p34,
+					_p33,
+					_etaque$elm_simple_form$Form$F(_p35));
+				var newModel = _elm_lang$core$Native_Utils.update(
+					_p35,
+					{fields: newFields, dirtyFields: newDirtyFields, changedFields: newChangedFields});
+				return _etaque$elm_simple_form$Form$F(
+					_etaque$elm_simple_form$Form$updateValidate(newModel));
+			case 'Submit':
+				var validatedModel = _etaque$elm_simple_form$Form$updateValidate(_p35);
+				return _etaque$elm_simple_form$Form$F(
+					_elm_lang$core$Native_Utils.update(
+						validatedModel,
+						{isSubmitted: true}));
+			case 'Validate':
+				return _etaque$elm_simple_form$Form$F(
+					_etaque$elm_simple_form$Form$updateValidate(_p35));
+			default:
+				var newModel = _elm_lang$core$Native_Utils.update(
+					_p35,
+					{
+						fields: _etaque$elm_simple_form$Form_Field$group(_p31._0),
+						dirtyFields: _elm_lang$core$Set$empty,
+						changedFields: _elm_lang$core$Set$empty,
+						isSubmitted: false
+					});
+				return _etaque$elm_simple_form$Form$F(
+					_etaque$elm_simple_form$Form$updateValidate(newModel));
+		}
+	});
+var _etaque$elm_simple_form$Form$Reset = function (a) {
+	return {ctor: 'Reset', _0: a};
+};
+var _etaque$elm_simple_form$Form$Validate = {ctor: 'Validate'};
+var _etaque$elm_simple_form$Form$Submit = {ctor: 'Submit'};
+var _etaque$elm_simple_form$Form$Input = F2(
+	function (a, b) {
+		return {ctor: 'Input', _0: a, _1: b};
+	});
+var _etaque$elm_simple_form$Form$Blur = function (a) {
+	return {ctor: 'Blur', _0: a};
+};
+var _etaque$elm_simple_form$Form$Focus = function (a) {
+	return {ctor: 'Focus', _0: a};
+};
+var _etaque$elm_simple_form$Form$NoOp = {ctor: 'NoOp'};

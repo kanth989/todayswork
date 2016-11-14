@@ -1,0 +1,55 @@
+var _etaque$elm_simple_form$Form_Field$asString = function (field) {
+	var _p0 = field;
+	switch (_p0.ctor) {
+		case 'Text':
+			return _elm_lang$core$Maybe$Just(_p0._0);
+		case 'Textarea':
+			return _elm_lang$core$Maybe$Just(_p0._0);
+		case 'Select':
+			return _elm_lang$core$Maybe$Just(_p0._0);
+		case 'Radio':
+			return _elm_lang$core$Maybe$Just(_p0._0);
+		default:
+			return _elm_lang$core$Maybe$Nothing;
+	}
+};
+var _etaque$elm_simple_form$Form_Field$asBool = function (field) {
+	var _p1 = field;
+	if (_p1.ctor === 'Check') {
+		return _elm_lang$core$Maybe$Just(_p1._0);
+	} else {
+		return _elm_lang$core$Maybe$Nothing;
+	}
+};
+var _etaque$elm_simple_form$Form_Field$at = F2(
+	function (name, field) {
+		var _p2 = field;
+		if (_p2.ctor === 'Group') {
+			return A2(_elm_lang$core$Dict$get, name, _p2._0);
+		} else {
+			return _elm_lang$core$Maybe$Nothing;
+		}
+	});
+var _etaque$elm_simple_form$Form_Field$EmptyField = {ctor: 'EmptyField'};
+var _etaque$elm_simple_form$Form_Field$Check = function (a) {
+	return {ctor: 'Check', _0: a};
+};
+var _etaque$elm_simple_form$Form_Field$Radio = function (a) {
+	return {ctor: 'Radio', _0: a};
+};
+var _etaque$elm_simple_form$Form_Field$Select = function (a) {
+	return {ctor: 'Select', _0: a};
+};
+var _etaque$elm_simple_form$Form_Field$Textarea = function (a) {
+	return {ctor: 'Textarea', _0: a};
+};
+var _etaque$elm_simple_form$Form_Field$Text = function (a) {
+	return {ctor: 'Text', _0: a};
+};
+var _etaque$elm_simple_form$Form_Field$Group = function (a) {
+	return {ctor: 'Group', _0: a};
+};
+var _etaque$elm_simple_form$Form_Field$group = function (_p3) {
+	return _etaque$elm_simple_form$Form_Field$Group(
+		_elm_lang$core$Dict$fromList(_p3));
+};

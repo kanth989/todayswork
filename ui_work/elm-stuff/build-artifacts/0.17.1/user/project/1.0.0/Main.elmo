@@ -1,0 +1,563 @@
+var _user$project$Main$formView = function (form) {
+	var phone = A2(_etaque$elm_simple_form$Form$getFieldAsString, 'phone', form);
+	var fax = A2(_etaque$elm_simple_form$Form$getFieldAsString, 'fax', form);
+	var email = A2(_etaque$elm_simple_form$Form$getFieldAsString, 'email', form);
+	var pertype = A2(_etaque$elm_simple_form$Form$getFieldAsString, 'pertype', form);
+	var title = A2(_etaque$elm_simple_form$Form$getFieldAsString, 'title', form);
+	var name = A2(_etaque$elm_simple_form$Form$getFieldAsString, 'name', form);
+	var errorFor = function (field) {
+		var _p0 = field.liveError;
+		if (_p0.ctor === 'Just') {
+			return A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('error')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text(
+						_elm_lang$core$Basics$toString(_p0._0))
+					]));
+		} else {
+			return _elm_lang$html$Html$text('');
+		}
+	};
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$label,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('name')
+					])),
+				A2(
+				_etaque$elm_simple_form$Form_Input$textInput,
+				name,
+				_elm_lang$core$Native_List.fromArray(
+					[])),
+				errorFor(name),
+				A2(
+				_elm_lang$html$Html$label,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_etaque$elm_simple_form$Form_Input$textInput,
+						title,
+						_elm_lang$core$Native_List.fromArray(
+							[])),
+						_elm_lang$html$Html$text('title')
+					])),
+				errorFor(title),
+				A2(
+				_elm_lang$html$Html$label,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_etaque$elm_simple_form$Form_Input$textInput,
+						email,
+						_elm_lang$core$Native_List.fromArray(
+							[])),
+						_elm_lang$html$Html$text('email')
+					])),
+				errorFor(email),
+				A2(
+				_elm_lang$html$Html$label,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_etaque$elm_simple_form$Form_Input$textInput,
+						phone,
+						_elm_lang$core$Native_List.fromArray(
+							[])),
+						_elm_lang$html$Html$text('phone')
+					])),
+				errorFor(phone),
+				A2(
+				_elm_lang$html$Html$label,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_etaque$elm_simple_form$Form_Input$textInput,
+						fax,
+						_elm_lang$core$Native_List.fromArray(
+							[])),
+						_elm_lang$html$Html$text('fax')
+					])),
+				errorFor(fax),
+				A2(
+				_elm_lang$html$Html$label,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_etaque$elm_simple_form$Form_Input$textInput,
+						pertype,
+						_elm_lang$core$Native_List.fromArray(
+							[])),
+						_elm_lang$html$Html$text('pertype')
+					])),
+				errorFor(pertype),
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Events$onClick(_etaque$elm_simple_form$Form$Submit)
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('Submit')
+					]))
+			]));
+};
+var _user$project$Main$key = function (_) {
+	return _.email;
+};
+var _user$project$Main$allSelected = function (model) {
+	return _elm_lang$core$Native_Utils.eq(
+		_elm_lang$core$Set$size(model.selected),
+		_elm_lang$core$List$length(model.entries));
+};
+var _user$project$Main$toggle = F2(
+	function (x, set) {
+		return A2(_elm_lang$core$Set$member, x, set) ? A2(_elm_lang$core$Set$remove, x, set) : A2(_elm_lang$core$Set$insert, x, set);
+	});
+var _user$project$Main$update = F2(
+	function (msg, model) {
+		var _p1 = msg;
+		switch (_p1.ctor) {
+			case 'Toggle':
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{
+							selected: A2(_user$project$Main$toggle, _p1._0, model.selected)
+						}),
+					_elm_lang$core$Native_List.fromArray(
+						[]));
+			case 'Mdl':
+				return A2(_debois$elm_mdl$Material$update, _p1._0, model);
+			case 'Add':
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{
+							entries: A2(
+								_elm_lang$core$Basics_ops['++'],
+								model.entries,
+								_elm_lang$core$Native_List.fromArray(
+									[]))
+						}),
+					_elm_lang$core$Native_List.fromArray(
+						[]));
+			case 'Delete':
+				var updatedEntries = A2(
+					_elm_lang$core$List$filter,
+					function (x) {
+						return _elm_lang$core$Basics$not(
+							A2(
+								_elm_lang$core$List$member,
+								x.email,
+								_elm_lang$core$Set$toList(model.selected)));
+					},
+					model.entries);
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{entries: updatedEntries, selected: _elm_lang$core$Set$empty}),
+					_elm_lang$core$Native_List.fromArray(
+						[]));
+			default:
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							forms: A2(_etaque$elm_simple_form$Form$update, _p1._0, model.forms)
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+		}
+	});
+var _user$project$Main$datas = _elm_lang$core$Native_List.fromArray(
+	[
+		{pertype: 'Executive', name: 'Srikanth', title: 'CEO', phone: '988889999', fax: '8822', email: 'pykanth@gmail.com'},
+		{pertype: 'Executive1', name: 'Pradeep', title: 'CTO', phone: '988889999', fax: '8822', email: 'pradeep@gmail.com'},
+		{pertype: 'Executive2', name: 'Praveen', title: 'CFO', phone: '988889999', fax: '8822', email: 'praveen@gmail.com'}
+	]);
+var _user$project$Main$input = _elm_lang$core$Native_Platform.incomingPort('input', _elm_lang$core$Json_Decode$int);
+var _user$project$Main$Model = F4(
+	function (a, b, c, d) {
+		return {mdl: a, selected: b, entries: c, forms: d};
+	});
+var _user$project$Main$Data = F6(
+	function (a, b, c, d, e, f) {
+		return {pertype: a, name: b, title: c, phone: d, fax: e, email: f};
+	});
+var _user$project$Main$data = A6(_user$project$Main$Data, '', '', '', '', '', '');
+var _user$project$Main$validate = A7(
+	_etaque$elm_simple_form$Form_Validate$form6,
+	_user$project$Main$Data,
+	A2(_etaque$elm_simple_form$Form_Validate$get, 'name', _etaque$elm_simple_form$Form_Validate$string),
+	A2(_etaque$elm_simple_form$Form_Validate$get, 'title', _etaque$elm_simple_form$Form_Validate$string),
+	A2(_etaque$elm_simple_form$Form_Validate$get, 'email', _etaque$elm_simple_form$Form_Validate$email),
+	A2(_etaque$elm_simple_form$Form_Validate$get, 'fax', _etaque$elm_simple_form$Form_Validate$string),
+	A2(_etaque$elm_simple_form$Form_Validate$get, 'phone', _etaque$elm_simple_form$Form_Validate$string),
+	A2(_etaque$elm_simple_form$Form_Validate$get, 'pertype', _etaque$elm_simple_form$Form_Validate$string));
+var _user$project$Main$model = {
+	mdl: _debois$elm_mdl$Material$model,
+	selected: _elm_lang$core$Set$empty,
+	entries: A2(
+		_elm_lang$core$Basics_ops['++'],
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_user$project$Main$datas),
+	forms: A2(
+		_etaque$elm_simple_form$Form$initial,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_user$project$Main$validate)
+};
+var _user$project$Main$FormMsg = function (a) {
+	return {ctor: 'FormMsg', _0: a};
+};
+var _user$project$Main$Delete = {ctor: 'Delete'};
+var _user$project$Main$Add = {ctor: 'Add'};
+var _user$project$Main$Toggle = function (a) {
+	return {ctor: 'Toggle', _0: a};
+};
+var _user$project$Main$Mdl = function (a) {
+	return {ctor: 'Mdl', _0: a};
+};
+var _user$project$Main$view = function (model) {
+	var table = A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_debois$elm_mdl$Material_Table$tbody,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				A2(
+					_elm_lang$core$List$indexedMap,
+					F2(
+						function (idx, item) {
+							return A2(
+								_debois$elm_mdl$Material_List$ul,
+								_elm_lang$core$Native_List.fromArray(
+									[]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										A2(
+										_debois$elm_mdl$Material_List$li,
+										_elm_lang$core$Native_List.fromArray(
+											[]),
+										_elm_lang$core$Native_List.fromArray(
+											[
+												A2(
+												_debois$elm_mdl$Material_List$content,
+												_elm_lang$core$Native_List.fromArray(
+													[]),
+												_elm_lang$core$Native_List.fromArray(
+													[
+														A2(
+														_debois$elm_mdl$Material_List$avatarIcon,
+														'photo_camera',
+														_elm_lang$core$Native_List.fromArray(
+															[])),
+														_elm_lang$html$Html$text(item.name),
+														A2(
+														_debois$elm_mdl$Material_List$subtitle,
+														_elm_lang$core$Native_List.fromArray(
+															[]),
+														_elm_lang$core$Native_List.fromArray(
+															[
+																A2(
+																_elm_lang$html$Html$a,
+																_elm_lang$core$Native_List.fromArray(
+																	[
+																		_elm_lang$html$Html_Attributes$href(
+																		_elm_lang$core$String$concat(
+																			_elm_lang$core$Native_List.fromArray(
+																				[
+																					'tel:',
+																					_elm_lang$core$Basics$toString(item.phone)
+																				])))
+																	]),
+																_elm_lang$core$Native_List.fromArray(
+																	[
+																		_debois$elm_mdl$Material_Icon$i('phone')
+																	]))
+															]))
+													])),
+												A2(
+												_debois$elm_mdl$Material_List$content2,
+												_elm_lang$core$Native_List.fromArray(
+													[]),
+												_elm_lang$core$Native_List.fromArray(
+													[
+														A5(
+														_debois$elm_mdl$Material_Toggles$checkbox,
+														_user$project$Main$Mdl,
+														_elm_lang$core$Native_List.fromArray(
+															[4]),
+														model.mdl,
+														_elm_lang$core$Native_List.fromArray(
+															[
+																_debois$elm_mdl$Material_Toggles$value(
+																A2(
+																	_elm_lang$core$Set$member,
+																	_user$project$Main$key(item),
+																	model.selected)),
+																_debois$elm_mdl$Material_Toggles$onClick(
+																_user$project$Main$Toggle(
+																	_user$project$Main$key(item)))
+															]),
+														_elm_lang$core$Native_List.fromArray(
+															[]))
+													]))
+											]))
+									]));
+						}),
+					model.entries))
+			]));
+	var table1 = A2(
+		_debois$elm_mdl$Material_Table$table,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_debois$elm_mdl$Material_Table$thead,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_debois$elm_mdl$Material_Table$tr,
+						_elm_lang$core$Native_List.fromArray(
+							[]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								A2(
+								_debois$elm_mdl$Material_Table$th,
+								_elm_lang$core$Native_List.fromArray(
+									[]),
+								_elm_lang$core$Native_List.fromArray(
+									[])),
+								A2(
+								_debois$elm_mdl$Material_Table$th,
+								_elm_lang$core$Native_List.fromArray(
+									[]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html$text('Type')
+									])),
+								A2(
+								_debois$elm_mdl$Material_Table$th,
+								_elm_lang$core$Native_List.fromArray(
+									[]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html$text('Name')
+									])),
+								A2(
+								_debois$elm_mdl$Material_Table$th,
+								_elm_lang$core$Native_List.fromArray(
+									[]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html$text('Title')
+									])),
+								A2(
+								_debois$elm_mdl$Material_Table$th,
+								_elm_lang$core$Native_List.fromArray(
+									[]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html$text('Phone')
+									])),
+								A2(
+								_debois$elm_mdl$Material_Table$th,
+								_elm_lang$core$Native_List.fromArray(
+									[]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html$text('Fax')
+									])),
+								A2(
+								_debois$elm_mdl$Material_Table$th,
+								_elm_lang$core$Native_List.fromArray(
+									[]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html$text('Email')
+									]))
+							]))
+					])),
+				A2(
+				_debois$elm_mdl$Material_Table$tbody,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				A2(
+					_elm_lang$core$List$indexedMap,
+					F2(
+						function (idx, item) {
+							return A2(
+								_debois$elm_mdl$Material_Table$tr,
+								_elm_lang$core$Native_List.fromArray(
+									[
+										A2(
+										_debois$elm_mdl$Material_Options$when,
+										_debois$elm_mdl$Material_Table$selected,
+										A2(
+											_elm_lang$core$Set$member,
+											_user$project$Main$key(item),
+											model.selected))
+									]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										A2(
+										_debois$elm_mdl$Material_Table$td,
+										_elm_lang$core$Native_List.fromArray(
+											[]),
+										_elm_lang$core$Native_List.fromArray(
+											[
+												A5(
+												_debois$elm_mdl$Material_Toggles$checkbox,
+												_user$project$Main$Mdl,
+												_elm_lang$core$Native_List.fromArray(
+													[idx]),
+												model.mdl,
+												_elm_lang$core$Native_List.fromArray(
+													[
+														_debois$elm_mdl$Material_Toggles$onClick(
+														_user$project$Main$Toggle(
+															_user$project$Main$key(item))),
+														_debois$elm_mdl$Material_Toggles$value(
+														A2(
+															_elm_lang$core$Set$member,
+															_user$project$Main$key(item),
+															model.selected))
+													]),
+												_elm_lang$core$Native_List.fromArray(
+													[]))
+											])),
+										A2(
+										_debois$elm_mdl$Material_Table$td,
+										_elm_lang$core$Native_List.fromArray(
+											[]),
+										_elm_lang$core$Native_List.fromArray(
+											[
+												_elm_lang$html$Html$text(item.pertype)
+											])),
+										A2(
+										_debois$elm_mdl$Material_Table$td,
+										_elm_lang$core$Native_List.fromArray(
+											[]),
+										_elm_lang$core$Native_List.fromArray(
+											[
+												_elm_lang$html$Html$text(item.name)
+											])),
+										A2(
+										_debois$elm_mdl$Material_Table$td,
+										_elm_lang$core$Native_List.fromArray(
+											[]),
+										_elm_lang$core$Native_List.fromArray(
+											[
+												_elm_lang$html$Html$text(item.title)
+											])),
+										A2(
+										_debois$elm_mdl$Material_Table$td,
+										_elm_lang$core$Native_List.fromArray(
+											[]),
+										_elm_lang$core$Native_List.fromArray(
+											[
+												_elm_lang$html$Html$text(item.phone)
+											])),
+										A2(
+										_debois$elm_mdl$Material_Table$td,
+										_elm_lang$core$Native_List.fromArray(
+											[]),
+										_elm_lang$core$Native_List.fromArray(
+											[
+												_elm_lang$html$Html$text(item.fax)
+											])),
+										A2(
+										_debois$elm_mdl$Material_Table$td,
+										_elm_lang$core$Native_List.fromArray(
+											[]),
+										_elm_lang$core$Native_List.fromArray(
+											[
+												_elm_lang$html$Html$text(item.email)
+											]))
+									]));
+						}),
+					model.entries))
+			]));
+	var formview = A2(
+		_elm_lang$html$Html_App$map,
+		_user$project$Main$FormMsg,
+		_user$project$Main$formView(model.forms));
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				table,
+				(_elm_lang$core$Native_Utils.cmp(
+				_elm_lang$core$Set$size(model.selected),
+				1) > -1) ? A5(
+				_debois$elm_mdl$Material_Button$render,
+				_user$project$Main$Mdl,
+				_elm_lang$core$Native_List.fromArray(
+					[0]),
+				model.mdl,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_debois$elm_mdl$Material_Button$fab,
+						A2(_debois$elm_mdl$Material_Options$css, 'align', 'center'),
+						_debois$elm_mdl$Material_Button$colored,
+						_debois$elm_mdl$Material_Button$onClick(_user$project$Main$Delete)
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_debois$elm_mdl$Material_Icon$i('delete')
+					])) : A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[formview]))
+			]));
+};
+var _user$project$Main$main = {
+	main: _elm_lang$html$Html_App$program(
+		{
+			init: {ctor: '_Tuple2', _0: _user$project$Main$model, _1: _elm_lang$core$Platform_Cmd$none},
+			view: _user$project$Main$view,
+			subscriptions: _elm_lang$core$Basics$always(_elm_lang$core$Platform_Sub$none),
+			update: _user$project$Main$update
+		})
+};
